@@ -25,27 +25,27 @@ public class Ensemble<T> extends AbstractSet<T> {
     }
      
     public Ensemble<T> union(Ensemble<? extends T> e) {
-        // à compléter pour la question1-2
-
-        return null;
+        Ensemble<T> ensemble = this;
+        ensemble.addAll(e);
+        return ensemble;
     }
 
     public Ensemble<T> inter(Ensemble<? extends T> e) {
-        // à compléter pour la question1-2
-
-        return null;
+        Ensemble<T> ensemble = this;
+        ensemble.retainAll(e);
+        return ensemble;
     }
 
     public Ensemble<T> diff(Ensemble<? extends T> e) {
-        // à compléter pour la question1-2
-
-        return null;
+        Ensemble<T> ensemble =  this;
+        ensemble.removeAll(e);
+        return ensemble;
     }
 
     Ensemble<T> diffSym(Ensemble<? extends T> e) {
-        // à compléter pour la question1-2
-
-        return null;
+        Ensemble<T> ensemble =  this;
+        (ensemble.union(e)).removeAll(ensemble.inter(e));
+        return ensemble;
     }
     
 }
