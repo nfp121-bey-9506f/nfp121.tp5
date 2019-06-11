@@ -15,15 +15,7 @@ public class Ensemble<T> extends AbstractSet<T> {
     }
 
     public boolean add(T t) {
-        Iterator i = this.iterator();
-        boolean exists = false;
-        while(i.hasNext()){
-            if(table.contains(t)){
-                exists = true;
-                break;
-            }
-            i.next();
-        }
+        boolean exists = table.contains(t);
         if(exists) {
             System.out.println("Cet element est deja existant dans l'ensemble");
             return false;
@@ -31,7 +23,7 @@ public class Ensemble<T> extends AbstractSet<T> {
         table.add(t);   
         return true;
     }
-
+     
     public Ensemble<T> union(Ensemble<? extends T> e) {
         // à compléter pour la question1-2
 
