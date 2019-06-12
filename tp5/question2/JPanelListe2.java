@@ -33,6 +33,9 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
 
     private List<String> liste;
     private Map<String, Integer> occurrences;
+    
+    Caretaker caretaker = new Caretaker();
+    Originator originator = new Originator();
 
     public JPanelListe2(List<String> liste, Map<String, Integer> occurrences) {
         this.liste = liste;
@@ -67,7 +70,11 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
         add(texte, "Center");
 
         boutonRechercher.addActionListener(this);
-        // à compléter;
+        boutonRetirer.addActionListener(this);
+        boutonOccurrences.addActionListener(this);
+        boutonAnnuler.addActionListener(this);
+        ordreCroissant.addItemListener(this);
+        ordreDecroissant.addItemListener(this);
 
     }
 
@@ -80,17 +87,31 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
                 afficheur.setText("résultat de la recherche de : "
                     + saisie.getText() + " -->  " + res);
             } else if (ae.getSource() == boutonRetirer) {
+                List<String> l = new LinkedList<String>();
+                l.addAll(liste);
+                originator.set(l);
+                caretaker.addMemento(originator.storeInMemento());
                 res = retirerDeLaListeTousLesElementsCommencantPar(saisie
                     .getText());
                 afficheur
                 .setText("résultat du retrait de tous les éléments commençant par -->  "
                     + saisie.getText() + " : " + res);
+                    
             } else if (ae.getSource() == boutonOccurrences) {
                 Integer occur = occurrences.get(saisie.getText());
                 if (occur != null)
                     afficheur.setText(" -->  " + occur + " occurrence(s)");
                 else
                     afficheur.setText(" -->  ??? ");
+            }else{
+               
+                if(!caretaker.savedStates.empty()){
+                    System.out.println("Helo");
+                   List<String> l = originator.restoreFromMemento(caretaker.getMemento());
+                   occurrences = Chapitre2CoreJava2.occurrencesDesMots(l);
+                   liste = l;
+                   System.out.println(l.get(0));
+                }
             }
             texte.setText(liste.toString());
 
@@ -100,20 +121,44 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
     }
 
     public void itemStateChanged(ItemEvent ie) {
-        if (ie.getSource() == ordreCroissant)
-        ;// à compléter
-        else if (ie.getSource() == ordreDecroissant)
-        ;// à compléter
+        if (ie.getSource() == ordreCroissant){
+            List<String> l = new LinkedList<String>();
+            l.addAll(liste);
+            originator.set(l);
+            caretaker.addMemento(originator.storeInMemento());
+            Collections.sort(liste);
+            
+        }
+        else if (ie.getSource() == ordreDecroissant){
+            List<String> l = new LinkedList<String>();
+            l.addAll(liste);
+            originator.set(l);
+            caretaker.addMemento(originator.storeInMemento());
+            Collections.sort(liste,new ReverseSort());
+        }
 
         texte.setText(liste.toString());
     }
 
     private boolean retirerDeLaListeTousLesElementsCommencantPar(String prefixe) {
         boolean resultat = false;
-        // à compléter
-        // à compléter
-        // à compléter
+        for(int i = 0;i<liste.size();i++){
+            String s = liste.get(i);
+            if(s.startsWith(prefixe)) {
+                liste.remove(i);
+                int j = Integer.valueOf(occurrences.get(s));
+                j--;
+                i--;
+                occurrences.put(s,j);
+                resultat = true;
+            }
+        }
         return resultat;
     }
-
+    
+    private class ReverseSort implements Comparator{
+        public int compare(Object o1,Object o2){
+            return o2.toString().compareTo(o1.toString());
+        }   
+    }
 }

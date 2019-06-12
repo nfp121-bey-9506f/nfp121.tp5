@@ -18,7 +18,7 @@ public class JPanelListe extends JPanel implements ActionListener, ItemListener 
     private JTextField saisie = new JTextField();
 
     private JPanel panelBoutons = new JPanel();
-    private JButton boutonRechercher = new JButton("rechercher");
+    public JButton boutonRechercher = new JButton("rechercher");
     private JButton boutonRetirer = new JButton("retirer");
 
     private CheckboxGroup mode = new CheckboxGroup();
@@ -58,12 +58,16 @@ public class JPanelListe extends JPanel implements ActionListener, ItemListener 
         }
 
         setLayout(new BorderLayout());
-
+        
         add(cmd, "North");
         add(texte, "Center");
 
         boutonRechercher.addActionListener(this);
-        // à compléter;
+        boutonRetirer.addActionListener(this);
+        boutonOccurrences.addActionListener(this);
+        ordreCroissant.addItemListener(this);
+        ordreDecroissant.addItemListener(this);
+        
 
     }
 
@@ -95,19 +99,37 @@ public class JPanelListe extends JPanel implements ActionListener, ItemListener 
 
     public void itemStateChanged(ItemEvent ie) {
         if (ie.getSource() == ordreCroissant)
-            ;// à compléter
+            Collections.sort(liste);
         else if (ie.getSource() == ordreDecroissant)
-            ;// à compléter
-
+            Collections.sort(liste,new ReverseSort());
         texte.setText(liste.toString());
     }
 
     private boolean retirerDeLaListeTousLesElementsCommencantPar(String prefixe) {
         boolean resultat = false;
-        // à compléter
-        // à compléter
-        // à compléter
+        // Iterator<String> it = liste.iterator();
+        // while(it.hasNext()){
+            // String s = it.next();
+            // if(s.startsWith(prefixe)) liste.remove(s);
+        // } // throws java.util.ConcurrentModificationException
+        for(int i = 0;i<liste.size();i++){
+            String s = liste.get(i);
+            if(s.startsWith(prefixe)) {
+                liste.remove(i);
+                int j = Integer.valueOf(occurrences.get(s));
+                j--;
+                i--;
+                occurrences.put(s,j);
+                resultat = true;
+            }
+        }
         return resultat;
+    }
+    
+    private class ReverseSort implements Comparator{
+        public int compare(Object o1,Object o2){
+            return o2.toString().compareTo(o1.toString());
+        }
     }
 
 }

@@ -13,6 +13,7 @@ public class IHMListe extends JFrame {
         setLocation(100,100);
         pack();
         setVisible(true);
+        getRootPane().setDefaultButton(jPanelListe.boutonRechercher);
     }
 
     public static void main(String[] args){
